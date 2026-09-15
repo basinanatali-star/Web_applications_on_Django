@@ -3,7 +3,7 @@ from .models import Product, Category
 
 
 def home_view(request):
-    return render(request, 'home.html')
+    return render(request, "home.html")
 
 
 def contacts_view(request):
