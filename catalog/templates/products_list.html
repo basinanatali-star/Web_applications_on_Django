@@ -1,25 +1,18 @@
-{% load static %}
+{% extends 'base.html' %}
+{% block title %}Список продуктов 1С{% endblock %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Программные продукты фирмы "1С"</title>
-    <link rel="stylesheet" href="{% static 'bootstrap-5.3.8-dist/css/bootstrap.min.css' %}">
-</head>
-<body>
-    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-5"><strong>Список программных продуктов фирмы "1С"</strong></h1>
         <p class="lead"> Данные продукты - это отличный выбор компьютерных программ как делового, так и домашнего назначения </p>
         <ul class="list-group">
             {% for product in products %}
                 <li class="list-group-item">
-                    {{ product.name }} - {{ product.description }} - {{ product.category.name }} - {{ product.price }}
+                    {{ product.category }} —
+                    <a class="text-muted fw-bold" href="/product_detail/{{ product.id }}">{{ product.name }}</a> —
+                    {{ product.price }}₽
                 </li>
             {% endfor %}
         </ul>
-    </div>
-    <script src="{% static 'bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js' %}"></script>
-</body>
-</html>
+</div>
+{% endblock %}

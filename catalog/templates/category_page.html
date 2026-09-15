@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Список продуктов 1С{% endblock %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-5"><strong>Каталог продуктов фирмы "1С"</strong></h1>
+    <h2 class="display-5"><strong>Категории</strong></h2>
+        <ul class="list-group">
+            {% for category in categories %}
+                <li class="list-group-item">
+                    <strong>{{ category.name }}</strong><br>
+                    {{ category.description }}
+                </li>
+            {% empty %}
+            <li class="list-group-item">Категорий пока нет</li>
+            {% endfor %}
+        </ul>
+<a class="text-muted display-6" href="/products_list/">Список продуктов 1С</a>
+</div>
+{% endblock %}
