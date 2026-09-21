@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Список публикаций
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <h1 class="mb-4">
+        Публикации блога
+    </h1>
+
+    <a href="{% url 'catalog:blog_create' %}"
+       class="btn btn-success mb-4">
+        Создать публикацию
+    </a>
+
+    {% for post in posts %}
+    <div class="card mb-3">
+        <div class="card-body">
+
+            {% if post.preview %}
+                <img src="{{ post.preview.url }}"
+                     alt="Превью публикации"
+                     class="img-fluid rounded mb-3"
+                     style="max-height: 220px; object-fit: cover;">
+            {% endif %}
+
+            <h2 class="card-title">
+                {{ post.title }}
+            </h2>
+
+            <p class="text-muted">
+                {{ post.creation_date|date:"d.m.Y H:i" }}
+            </p>
+
+            <p class="card-text">
+                {{ post.content|truncatewords:25 }}
+            </p>
+
+            <a href="{% url 'catalog:blog_detail' blog_id=post.pk %}"
+               class="btn btn-primary">
+                Читать далее
+            </a>
+
+        </div>
+    </div>
+{% endfor %}
+
+</div>
+{% endblock %}
