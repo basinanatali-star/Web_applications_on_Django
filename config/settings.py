@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import os
 from django.conf.global_settings import MEDIA_URL, MEDIA_ROOT
@@ -100,7 +99,3 @@ MAILERS = {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
     },
 }
-
-MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
