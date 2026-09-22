@@ -85,8 +85,17 @@ class BlogUpdateView(UpdateView):
         "preview",
         "publication_flag",
     ]
-    success_url = reverse_lazy("catalog:blog_list")
     pk_url_kwarg = "blog_id"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "catalog:blog_detail",
+            kwargs={
+                "blog_id": self.object.pk,
+            },
+        )
+
+
 
 
 class BlogDeleteView(DeleteView):
