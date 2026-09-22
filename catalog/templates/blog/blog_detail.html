@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="card">
+        <div class="card-body">
+
+            <h1>{{ post.title }}</h1>
+
+            <p class="text-muted">
+                {{ post.creation_date|date:"d.m.Y H:i" }}
+            </p>
+
+            {% if post.preview %}
+                <img src="{{ post.preview.url }}"
+                    alt="Превью публикации"
+                    class="img-fluid rounded mb-4"
+                    style="max-width: 300px;">
+            {% endif %}
+
+            <div style="white-space: pre-line;">
+                {{ post.content }}
+            </div>
+
+            <hr>
+
+            <p>
+                Просмотров: {{ post.number_of_views }}
+            </p>
+
+            <a href="{% url 'catalog:blog_list' %}"
+               class="btn btn-secondary">
+                К списку
+            </a>
+
+            <a href="{% url 'catalog:blog_update' blog_id=post.pk %}"
+               class="btn btn-primary">
+                Редактировать
+            </a>
+
+            <a href="{% url 'catalog:blog_delete' blog_id=post.pk %}"
+               class="btn btn-danger">
+                Удалить
+            </a>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
