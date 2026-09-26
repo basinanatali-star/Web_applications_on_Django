@@ -29,31 +29,6 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy("catalog:products_list")
 
 
-class ProductListView(ListView):
-    model = Product
-    form_class = ProductForm
-    template_name = "products_list.html"
-    context_object_name = "products"
-
-    def get_queryset(self):
-        return Product.objects.filter(publication_flag=True).order_by("-creation_date")
-
-
-class ProductDetailView(DetailView):
-    model = Product
-    form_class = ProductForm
-    template_name = "product_detail.html"
-    context_object_name = "product"
-    pk_url_kwarg = "product_id"
-
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        obj.number_of_views += 1
-        obj.save(update_fields=["number_of_views"])
-
-        return obj
-
-
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
@@ -80,6 +55,13 @@ class ProductsListView(ListView):
     model = Product
     template_name = "products_list.html"
     context_object_name = "products"
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = "product_detail.html"
+    context_object_name = "product"
+    pk_url_kwarg = "product_id"
 
 
 class CategoryListView(ListView):
