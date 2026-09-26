@@ -12,7 +12,12 @@
                     <a class="text-muted fw-bold" href="/product_detail/{{ product.id }}">{{ product.name }}</a> —
                     {{ product.price }}₽
                 </li>
+
             {% endfor %}
+        <a href="{% url 'catalog:product_create' %}"
+       class="btn btn-success mb-4">
+        Внести в список новый программный продукт
+    </a>
         </ul>
 </div>
 {% endblock %}
