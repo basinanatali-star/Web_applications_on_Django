@@ -29,7 +29,20 @@
               <p>Дата последнего изменения: {{product.updated_at|date:"d M Y" }}</p>
           </ul>
           <div class="d-grid gap-2">
-            <button type="button" class="btn btn-lg btn-primary">Купить</button>
+            <a href="{% url 'catalog:products_list' %}"
+               class="btn btn-secondary">
+                К списку
+            </a>
+
+            <a href="{% url 'catalog:product_update' product_id=product.pk %}"
+               class="btn btn-primary">
+                Редактировать
+            </a>
+
+            <a href="{% url 'catalog:product_delete' product_id=product.pk %}"
+               class="btn btn-danger">
+                Удалить
+            </a>
           </div>
         </div>
 

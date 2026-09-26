@@ -9,6 +9,7 @@ from django.views.generic import (
     DeleteView,
 )
 from .models import Product, Category, Blog
+from .forms import ProductForm
 
 
 class HomeView(TemplateView):
@@ -19,6 +20,35 @@ class HomeView(TemplateView):
 class ContactsView(TemplateView):
     def get(self, request):
         return render(request, "contacts.html")
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "product_form.html"
+    success_url = reverse_lazy("catalog:products_list")
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "product_form.html"
+    pk_url_kwarg = "product_id"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "catalog:product_detail",
+            kwargs={
+                "product_id": self.object.pk,
+            },
+        )
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = "product_confirm_delete.html"
+    success_url = reverse_lazy("catalog:products_list")
+    pk_url_kwarg = "product_id"
 
 
 class ProductsListView(ListView):
@@ -96,36 +126,8 @@ class BlogUpdateView(UpdateView):
         )
 
 
-
-
 class BlogDeleteView(DeleteView):
     model = Blog
     template_name = "blog/blog_confirm_delete.html"
     success_url = reverse_lazy("catalog:blog_list")
     pk_url_kwarg = "blog_id"
-
-
-# def home_view(request):
-#     return render(request, "home.html")
-
-
-# def contacts_view(request):
-#     return render(request, 'contacts.html')
-
-
-# def products_list(request):
-#     products = Product.objects.all()
-#     context = {'products': products}
-#     return render(request, 'products_list.html', context)
-#
-#
-# def product_detail(request, product_id):
-#     product = Product.objects.get(id=product_id)
-#     context = {'product': product}
-#     return render(request, 'product_detail.html', context)
-#
-#
-# def category_page(request):
-#     categories = Category.objects.all()
-#     context = {'categories': categories}
-#     return render(request, 'category_page.html', context)

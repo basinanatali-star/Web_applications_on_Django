@@ -16,7 +16,9 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=150, verbose_name="Наименование")
     description = models.TextField(max_length=255, verbose_name="Описание")
-    image = models.ImageField(upload_to="picture/", verbose_name="Изображение")
+    image = models.ImageField(
+        upload_to="picture/", verbose_name="Изображение", blank=True
+    )
     category = models.CharField(max_length=150, verbose_name="Категория")
     price = models.DecimalField(
         max_digits=10,
