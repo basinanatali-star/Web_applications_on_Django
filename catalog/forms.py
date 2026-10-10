@@ -46,6 +46,7 @@ class ProductForm(forms.ModelForm):
             "price",
             "created_at",
             "updated_at",
+            "is_published",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -96,3 +97,8 @@ class ProductForm(forms.ModelForm):
             raise ValidationError("Цена не может быть отрицательной.")
 
         return price
+
+class ProductModeratorForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ["is_published"]

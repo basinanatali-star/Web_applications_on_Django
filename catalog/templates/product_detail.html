@@ -3,51 +3,73 @@
 
 {% block content %}
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-5"><strong>Программные продукты фирмы "1С"</strong></h1>
+    <h1 class="display-5">
+        <strong>Программные продукты фирмы "1С"</strong>
+    </h1>
 </div>
 
 <div class="container my-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="card shadow-sm">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
 
-        <div class="card-header bg-primary text-white">
-          <h1 class="h4 mb-0 text-center">{{ product.name }}</h1>
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h4 mb-0 text-center">{{ product.name }}</h1>
+                </div>
+
+                {% if product.image %}
+                    <img src="{{ product.image.url }}"
+                         class="card-img-top"
+                         style="max-height: 300px; object-fit: contain;"
+                         alt="{{ product.name }}">
+                {% endif %}
+
+                <div class="card-body">
+                    <p class="card-text" style="text-align: justify;">
+                        {{ product.description|truncatechars:100 }}
+                    </p>
+
+                    <ul class="list-unstyled mt-4 mb-4">
+                        <li>Категория: {{ product.category }}</li>
+                        <li>Цена за покупку: {{ product.price }} ₽</li>
+                        <li>Дата создания: {{ product.created_at|date:"d M Y" }}</li>
+                        <li>Дата последнего изменения: {{ product.updated_at|date:"d M Y" }}</li>
+                    </ul>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'catalog:products_list' %}"
+                           class="btn btn-secondary">
+                            К списку
+                        </a>
+
+                        {% if user.is_authenticated and product.owner_id == user.pk %}
+                            <a href="{% url 'catalog:product_update' product_id=product.pk %}"
+                               class="btn btn-primary">
+                                Редактировать
+                            </a>
+                        {% endif %}
+
+                        {% if perms.catalog.can_unpublish_product and product.is_published %}
+                            <form method="post"
+                                  action="{% url 'catalog:product_unpublish' pk=product.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-warning w-100">
+                                    Отменить публикацию
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        {% if user.is_authenticated and product.owner_id == user.pk or perms.catalog.delete_product %}
+                            <a href="{% url 'catalog:product_delete' product_id=product.pk %}"
+                               class="btn btn-danger">
+                                Удалить продукт
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
         </div>
-          {% if product.image %}
-          <img src="{{ product.image.url }}"
-               class="card-img-top"
-               style="max-height: 300px; object-fit: contain;">
-          {% endif %}
-        <div class="card-body">
-          <p class="card-text" style="text-align: justify;">{{ product.description|truncatechars:100  }}</p>
-
-          <ul class="list-unstyled mt-4 mb-4">
-              <p>Категория: {{ product.category}}</p>
-              <p>Цена за покупку: {{ product.price }}₽ </p>
-              <p>Дата создания: {{product.created_at|date:"d M Y" }}</p>
-              <p>Дата последнего изменения: {{product.updated_at|date:"d M Y" }}</p>
-          </ul>
-          <div class="d-grid gap-2">
-            <a href="{% url 'catalog:products_list' %}"
-               class="btn btn-secondary">
-                К списку
-            </a>
-
-            <a href="{% url 'catalog:product_update' product_id=product.pk %}"
-               class="btn btn-primary">
-                Редактировать
-            </a>
-
-            <a href="{% url 'catalog:product_delete' product_id=product.pk %}"
-               class="btn btn-danger">
-                Удалить
-            </a>
-          </div>
-        </div>
-
-      </div>
     </div>
-  </div>
 </div>
 {% endblock %}

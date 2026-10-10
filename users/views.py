@@ -1,13 +1,10 @@
 from django.core.mail import send_mail
 from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
+from django.views.generic import CreateView
 from django.conf import settings
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
 
-from catalog.models import Product
-from catalog.forms import ProductForm
 from users.forms import UserRegisterForm
 from users.models import CustomUser
 
