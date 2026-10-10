@@ -1,6 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils.translation.trans_real import catalog
 from django.views.generic import (
     TemplateView,
     CreateView,
@@ -8,9 +11,11 @@ from django.views.generic import (
     DetailView,
     UpdateView,
     DeleteView,
+    View,
 )
 from .models import Product, Category, Blog
 from .forms import ProductForm
+from catalog.forms import ProductModeratorForm
 
 
 class HomeView(TemplateView):
@@ -29,6 +34,10 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = "product_form.html"
     success_url = reverse_lazy("catalog:products_list")
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
@@ -43,7 +52,13 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
                 "product_id": self.object.pk,
             },
         )
-
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return ProductForm
+        if user.has_perm("catalog.can_unpublish_product") and ("catalog.can_delete_product"):
+            return ProductModeratorForm
+        raise PermissionDenied
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
@@ -63,6 +78,18 @@ class ProductDetailView(DetailView):
     template_name = "product_detail.html"
     context_object_name = "product"
     pk_url_kwarg = "product_id"
+
+class UnpublishProductView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+
+        if not request.user.has_perm('catalog.can_unpublish_product'):
+            return HttpResponseForbidden("У вас нет прав для отмены публикации продукта.")
+
+        product.is_published = False
+        product.save(update_fields=['is_published'])
+
+        return redirect('catalog:products_list')
 
 
 class CategoryListView(ListView):
