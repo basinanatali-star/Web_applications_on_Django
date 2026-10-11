@@ -3,7 +3,9 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.utils.translation.trans_real import catalog
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.core.cache import cache
 from django.views.generic import (
     TemplateView,
     CreateView,
@@ -16,6 +18,7 @@ from django.views.generic import (
 from .models import Product, Category, Blog
 from .forms import ProductForm
 from catalog.forms import ProductModeratorForm
+from .services import get_products_by_category
 
 
 class HomeView(TemplateView):
@@ -72,7 +75,15 @@ class ProductsListView(ListView):
     template_name = "products_list.html"
     context_object_name = "products"
 
+    def get_queryset(self):
+        queryset = cache.get('products_queryset')
+        if not queryset:
+            queryset = super().get_queryset()
+            cache.set('products_queryset', queryset, 60 * 15)  # Кешируем данные на 15 минут
+        return queryset
 
+
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailView(DetailView):
     model = Product
     template_name = "product_detail.html"
@@ -159,3 +170,17 @@ class BlogDeleteView(DeleteView):
     template_name = "blog/blog_confirm_delete.html"
     success_url = reverse_lazy("catalog:blog_list")
     pk_url_kwarg = "blog_id"
+
+
+class ProductsByCategoryView(ListView):
+    template_name = "products_by_category.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        category = self.kwargs["category"]
+        return get_products_by_category(category)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = self.kwargs["category"]
+        return context

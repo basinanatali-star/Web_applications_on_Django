@@ -15,6 +15,7 @@ from catalog.views import (
     BlogDetailView,
     BlogUpdateView,
     BlogDeleteView,
+    ProductsByCategoryView,
 )
 
 app_name = CatalogConfig.name
@@ -56,4 +57,6 @@ urlpatterns = [
     path("blog/<int:blog_id>/", BlogDetailView.as_view(), name="blog_detail"),
     path("blog/<int:blog_id>/edit/", BlogUpdateView.as_view(), name="blog_update"),
     path("blog/<int:blog_id>/delete/", BlogDeleteView.as_view(), name="blog_delete"),
+    path("category/<str:category>/", ProductsByCategoryView.as_view(), name="products_by_category",
+    ),
 ]
